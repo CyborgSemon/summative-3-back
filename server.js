@@ -8,12 +8,8 @@ const bcrypt = require(`bcryptjs`);
 
 const config = require(`./config.json`);
 
-<<<<<<< HEAD
-const Users = require(`./models/users`);
-=======
 const Users = require('./models/users');
 const Listings = require('./models/listings');
->>>>>>> master
 
 mongoose.connect(`mongodb+srv://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.CLUSTER_NAME}.mongodb.net/${config.TABLE_NAME}?retryWrites=true&w=majority`, {
     useNewUrlParser: true
