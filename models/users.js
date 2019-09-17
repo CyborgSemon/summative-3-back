@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require(`mongoose`);
 
 const usersSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -11,4 +11,4 @@ const usersSchema = new mongoose.Schema({
     registerDate: Date
 });
 
-module.exports = mongoose.model('Users', usersSchema);
+module.exports = mongoose.model(`Users`, usersSchema);
