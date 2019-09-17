@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads');
     },
     filename: (req, file, cb)=>{
-        cb(null, Date.now() + `-` + file.originalname)
+        cb(null, Date.now() + `-` + file.originalname);
     }
 });
 
@@ -40,7 +40,7 @@ const filterFile = (req, file, cb) => {
         req.validationError = `invalid extension`;
         cb(null, false, req.validationError);
     }
-}
+};
 
 const upload = multer({
     storage: storage,
@@ -97,9 +97,10 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
         res.send(result);
     }).catch(err => res.send(err));
 
-
+});
 // READ users for login
 app.post(`/login`, (req, res)=> {
+    console.log(`yeet`);
     Users.findOne({
         username: req.body.username
     }, (err, userCheck)=> {
@@ -119,7 +120,7 @@ app.post(`/login`, (req, res)=> {
 app.get(`/allListings`, (req, res)=> {
     Listings.find().then((result)=> {
         res.send(result);
-    })
+    });
 });
 
 // READ products based off id
