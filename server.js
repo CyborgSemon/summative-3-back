@@ -36,6 +36,41 @@ app.get(`/`, (req, res)=> {
     res.send(`Welcome to our Pop Culture Merchandise Niche Market App`);
 });
 
+
+
+// READ users for login
+app.post(`/login`, (req, res)=> {
+    Users.findOne({
+        username: req.body.username
+    }, (err, userCheck)=> {
+        if (userCheck) {
+            if (bcrypt.compareSync(req.body.password, userCheck.password)) {
+                res.send(userCheck);
+            } else {
+                res.send(`Invalid Password`);
+            }
+        } else {
+            res.send(`Invalid Username`);
+        }
+    });
+});
+
+// READ all listings
+app.get(`/allListings`, (req, res)=> {
+    Listings.find().then((result)=> {
+        res.send(result);
+    })
+});
+
+// READ products based off id
+app.post(`/product`, (req, res)=> {
+    Listings.findById(req.body.id, (err, product)=> {
+        res.send(product);
+    }).catch((err)=> {
+        res.send(`Can not find that item`);
+    });
+});
+
 app.listen(port, ()=> {
     console.log(`application is running on port ${port}`);
 });
