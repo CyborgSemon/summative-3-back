@@ -36,6 +36,43 @@ app.get(`/`, (req, res)=> {
     res.send(`Welcome to our Pop Culture Merchandise Niche Market App`);
 });
 
+app.post(`/registerUser`, (req, res)=>{
+    const user = new Users({
+        _id: new mongoose.Types.ObjectId(),
+        name: req.body.name,
+        address: req.body.address,
+        username: req.body.username,
+        password: req.body.password,
+        email: req.body.email,
+        dob: req.body.dob
+        // registerDate: Date
+    });
+});
+
+app.post(`/newListing`, (req, res)=>{
+    const listing = new Listings({
+        _id: new mongoose.Types.ObjectId(),
+    	title: req.body.title,
+    	description: req.body.description,
+    	price: req.body.price,
+    	fileName: req.file.path,
+    	originalName: req.file.originalname
+    });
+
+    listing.save().then(result => {
+        res.send(result);
+    }).catch(err => res.send(err));
+});
+
+// const storage = multer.diskStorage({
+//  destination: (req, file, cb) =>{
+//      cb(null, './uploads');
+//  },
+//  filename: (req, file, cb)=>{
+//  cb(null, Date.now() + `-` + file.originalname)
+//}
+//});
+
 app.listen(port, ()=> {
     console.log(`application is running on port ${port}`);
 });
