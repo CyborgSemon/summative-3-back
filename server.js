@@ -12,7 +12,8 @@ const Users = require('./models/users');
 const Listings = require('./models/listings');
 
 mongoose.connect(`mongodb+srv://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.CLUSTER_NAME}.mongodb.net/${config.TABLE_NAME}?retryWrites=true&w=majority`, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
 const db = mongoose.connection;
@@ -22,7 +23,7 @@ db.once(`open`, ()=> {
 });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlenconded({
+app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cors());
@@ -59,7 +60,7 @@ app.post(`/login`, (req, res)=> {
 app.get(`/allListings`, (req, res)=> {
     Listings.find().then((result)=> {
         res.send(result);
-    })
+    });
 });
 
 // READ products based off id

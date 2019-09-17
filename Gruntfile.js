@@ -10,12 +10,6 @@ module.exports = function (grunt){
 				}
 			}
 		},
-		watch: {
-			jsval: {
-				files: ['server.js'],
-				tasks: ['jshint']
-			}
-		},
 		uglify: {
 			my_target: {
 				files: {
@@ -25,13 +19,18 @@ module.exports = function (grunt){
 					esversion: 6
 				}
 			}
+		},
+		watch: {
+			jsval: {
+				files: ['server.js'],
+				tasks: ['jshint', 'uglify']
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-uglify-es');
-
 
 	grunt.registerTask('default', ['watch']);
 }
