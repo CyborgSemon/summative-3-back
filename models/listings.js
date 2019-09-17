@@ -5,7 +5,7 @@ const listingSchema = new mongoose.Schema({
 	title: String,
 	description: String,
 	price: String,
-	fileName: String,
+	filePath: String,
 	originalName: String,
 	uploaderId: {
 		type: mongoose.Schema.Types.ObjectId,
