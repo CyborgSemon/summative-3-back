@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require(`mongoose`);
 
 const listingSchema = new mongoose.Schema({
 	_id: mongoose.Schema.Types.ObjectId,
@@ -9,8 +9,8 @@ const listingSchema = new mongoose.Schema({
 	originalName: String,
 	uploaderId: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'users'
+		ref: `users`
 	}
 });
 
-module.exports = mongoose.model('Listings', listingSchema);
+module.exports = mongoose.model(`Listings`, listingSchema);

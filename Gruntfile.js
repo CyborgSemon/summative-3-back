@@ -2,7 +2,7 @@ module.exports = function (grunt){
 
 	grunt.initConfig({
 		jshint: {
-			files: ['server.js'],
+			files: [`server.js`],
 			options: {
 				esversion: 6,
 				globals:{
@@ -13,7 +13,7 @@ module.exports = function (grunt){
 		uglify: {
 			my_target: {
 				files: {
-					'server.min.js': ['server.js']
+					'server.min.js': [`server.js`]
 				},
 				options: {
 					esversion: 6
@@ -22,15 +22,15 @@ module.exports = function (grunt){
 		},
 		watch: {
 			jsval: {
-				files: ['server.js'],
-				tasks: ['jshint', 'uglify']
+				files: [`server.js`],
+				tasks: [`jshint`, `uglify`]
 			}
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-uglify-es');
+	grunt.loadNpmTasks(`grunt-contrib-jshint`);
+	grunt.loadNpmTasks(`grunt-contrib-watch`);
+	grunt.loadNpmTasks(`grunt-contrib-uglify-es`);
 
-	grunt.registerTask('default', ['watch']);
+	grunt.registerTask(`default`, [`watch`]);
 }

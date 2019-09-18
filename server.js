@@ -62,6 +62,7 @@ app.get(`/`, (req, res)=> {
     res.send(`Welcome to our Pop Culture Merchandise Niche Market App`);
 });
 
+// CREATE add a new user
 app.post(`/registerUser`, (req, res)=>{
     const hash = bcrypt.hashSync(req.body.password);
     const user = new Users({
@@ -80,10 +81,8 @@ app.post(`/registerUser`, (req, res)=>{
     }).catch(err => res.send(err));
 });
 
+// CREATE add a new listing
 app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
-    // console.log(req);
-    // console.log(req.body);
-    // console.log(req.file);
     const listing = new Listings({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
@@ -96,8 +95,8 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
     listing.save().then(result => {
         res.send(result);
     }).catch(err => res.send(err));
-
 });
+
 // READ users for login
 app.post(`/login`, (req, res)=> {
     console.log(`yeet`);
@@ -116,14 +115,14 @@ app.post(`/login`, (req, res)=> {
     });
 });
 
-// READ all listings
+// READ get all listings
 app.get(`/allListings`, (req, res)=> {
     Listings.find().then((result)=> {
         res.send(result);
     });
 });
 
-// READ products based off id
+// READ get products based off id
 app.post(`/product`, (req, res)=> {
     Listings.findById(req.body.id, (err, product)=> {
         res.send(product);
