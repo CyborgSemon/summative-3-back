@@ -36,6 +36,32 @@ app.get(`/`, (req, res)=> {
     res.send(`Welcome to our Pop Culture Merchandise Niche Market App`);
 });
 
+app.patch('/listing/:id', function(req, res){
+    const id = req.params.id;
+    Listing.findById(id, function(err, product){
+        if (product.user_id == req.body.userId) {
+            const newListing = {
+                title: req.body.name,
+                description: req.body.price,
+                price: req.body.price
+            };
+            Listing.updateOne({ _id : id }, newListing).then(result => {
+                res.send(result);
+            }).catch(err => res.send(err));
+        } else {
+            res.send('401');
+        }
+    }).catch(err => res.send('cannot find product with that id'));
+
+});
+
+app.delete('/listing/:id', function(req, res){
+    const id = req.params.id;
+    Listing.deleteOne({ _id: id }, function (err) {
+        res.send('deleted');
+    });
+});
+
 app.listen(port, ()=> {
     console.log(`application is running on port ${port}`);
 });
