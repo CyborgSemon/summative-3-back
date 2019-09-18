@@ -5,6 +5,10 @@ const commentsSchema = new mongoose.Schema({
     commentUsername: String,
     commentText: String,
 	commentDate: Date,
+    commentReply: {
+        reply: Boolean,
+        replyId: mongoose.Schema.Types.ObjectId
+    },
 	commentUserId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: `users`
