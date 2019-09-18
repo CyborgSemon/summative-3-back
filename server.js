@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require(`express`);
 const app = express();
 const port = 3000;
 const bodyParser = require(`body-parser`);
@@ -10,9 +10,9 @@ const multer = require(`multer`);
 
 const config = require(`./config.json`);
 
-const Users = require('./models/users');
-const Listings = require('./models/listings');
-const Comments = require('./models/comments');
+const Users = require(`./models/users`);
+const Listings = require(`./models/listings`);
+const Comments = require(`./models/comments`);
 
 mongoose.connect(`mongodb+srv://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.CLUSTER_NAME}.mongodb.net/${config.TABLE_NAME}?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
@@ -27,7 +27,7 @@ db.once(`open`, ()=> {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) =>{
-        cb(null, './uploads');
+        cb(null, `./uploads`);
     },
     filename: (req, file, cb)=>{
         cb(null, Date.now() + `-` + file.originalname);
@@ -64,7 +64,7 @@ app.get(`/`, (req, res)=> {
 });
 
 // CREATE add a new user
-app.post(`/registerUser`, (req, res)=>{
+app.post(`/registerUser`, (req, res)=> {
     const hash = bcrypt.hashSync(req.body.password);
     const user = new Users({
         _id: new mongoose.Types.ObjectId(),
@@ -83,7 +83,7 @@ app.post(`/registerUser`, (req, res)=>{
 });
 
 // CREATE add a new listing
-app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
+app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
     const listing = new Listings({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
@@ -98,9 +98,28 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
     }).catch(err => res.send(err));
 });
 
+// CREATE adding a comment
+app.post(`/addAComment`, (req, res)=> {
+    const comment = new Comments({
+        _id: new mongoose.Types.ObjectId(),
+        commentUsername: req.body.commentUsername,
+        commentText: req.body.commentText,
+    	commentDate: req.body.commentDate,
+        commentReply: {
+            reply: req.body.reply,
+            replyId: req.body.replyId
+        },
+        commentUserId: req.body.userId,
+        listingId: req.body.listingId,
+    });
+
+    comment.save().then(result =>{
+        res.send(result);
+    }).catch(err => res.send(err));
+});
+
 // READ users for login
 app.post(`/login`, (req, res)=> {
-    console.log(`yeet`);
     Users.findOne({
         username: req.body.username
     }, (err, userCheck)=> {
