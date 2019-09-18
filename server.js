@@ -64,7 +64,7 @@ app.get(`/`, (req, res)=> {
 });
 
 // CREATE add a new user
-app.post(`/registerUser`, (req, res)=>{
+app.post(`/registerUser`, (req, res)=> {
     const hash = bcrypt.hashSync(req.body.password);
     const user = new Users({
         _id: new mongoose.Types.ObjectId(),
@@ -83,7 +83,7 @@ app.post(`/registerUser`, (req, res)=>{
 });
 
 // CREATE add a new listing
-app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
+app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
     const listing = new Listings({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
@@ -94,6 +94,19 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
     });
 
     listing.save().then(result => {
+        res.send(result);
+    }).catch(err => res.send(err));
+});
+
+app.post(`/addAComment`, (req, res)=> {
+    const comment = new Comments({
+        _id: new mongoose.Types.ObjectId(),
+        commentUsername: req.body.commentUsername,
+        commentText: req.body.commentText,
+    	commentDate: req.body.commentDate
+    });
+
+    comment.save().then(result =>{
         res.send(result);
     }).catch(err => res.send(err));
 });
