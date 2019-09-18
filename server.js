@@ -5,6 +5,8 @@ const bodyParser = require(`body-parser`);
 const cors = require(`cors`);
 const mongoose = require(`mongoose`);
 const bcrypt = require(`bcryptjs`);
+const fs = require(`fs`);
+const multer = require(`multer`);
 
 const config = require(`./config.json`);
 
@@ -22,6 +24,29 @@ db.once(`open`, ()=> {
     console.log(`we are connected mongo db`);
 });
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) =>{
+        cb(null, './uploads');
+    },
+    filename: (req, file, cb)=>{
+        cb(null, Date.now() + `-` + file.originalname);
+    }
+});
+
+const filterFile = (req, file, cb) => {
+    if(file.mimetype === `image/jpeg` || file.mimetype === `image/png`){
+        cb(null, true);
+    }else {
+        req.validationError = `invalid extension`;
+        cb(null, false, req.validationError);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: filterFile
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -37,10 +62,45 @@ app.get(`/`, (req, res)=> {
     res.send(`Welcome to our Pop Culture Merchandise Niche Market App`);
 });
 
+app.post(`/registerUser`, (req, res)=>{
+    const hash = bcrypt.hashSync(req.body.password);
+    const user = new Users({
+        _id: new mongoose.Types.ObjectId(),
+        name: req.body.name,
+        address: req.body.address,
+        username: req.body.username,
+        password: hash,
+        email: req.body.email,
+        dob: req.body.dob,
+        registerDate: req.body.registerDate
+    });
 
+    user.save().then(result => {
+        res.send(result);
+    }).catch(err => res.send(err));
+});
 
+app.post(`/newListing`, upload.single(`filePath`), (req, res)=>{
+    // console.log(req);
+    // console.log(req.body);
+    // console.log(req.file);
+    const listing = new Listings({
+        _id: new mongoose.Types.ObjectId(),
+        title: req.body.title,
+        description: req.body.description,
+        price: req.body.price,
+        filePath: req.file.path,
+        originalName: req.body.originalname
+    });
+
+    listing.save().then(result => {
+        res.send(result);
+    }).catch(err => res.send(err));
+
+});
 // READ users for login
 app.post(`/login`, (req, res)=> {
+    console.log(`yeet`);
     Users.findOne({
         username: req.body.username
     }, (err, userCheck)=> {
