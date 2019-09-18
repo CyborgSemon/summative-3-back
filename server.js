@@ -36,9 +36,9 @@ app.get(`/`, (req, res)=> {
     res.send(`Welcome to our Pop Culture Merchandise Niche Market App`);
 });
 
-app.post(`/listing/:id`, function(req, res){
+app.post(`/listing/:id`, (req, res)=> {
     const id = req.params.id;
-    Listing.findById(id, function (err, listing) {
+    Listing.findById(id, (err, listing)=> {
         if (listing.user_id == req.body.userId) {
             res.send(listing);
         } else {
@@ -47,9 +47,9 @@ app.post(`/listing/:id`, function(req, res){
     });
 });
 
-app.patch(`/updateListing`, function(req, res){
+app.patch(`/updateListing`, (req, res)=> {
     const id = req.body.id;
-    Listing.findById(id, function(err, listing){
+    Listing.findById(id, (err, listing)=> {
         if (listing.user_id == req.body.userId) {
             const newListing = {
                 title: req.body.name,
@@ -66,11 +66,28 @@ app.patch(`/updateListing`, function(req, res){
 
 });
 
-app.delete(`/listing/:id`, function(req, res){
+app.delete(`/listing/:id`, (req, res)=> {
     const id = req.params.id;
-    Listing.deleteOne({ _id: id }, function (err) {
+    Listing.deleteOne({ _id: id }, (err)=> {
         res.send(`deleted`);
     });
+});
+
+app.patch(`/updateComment`, (req, res)=> {
+    const id = req.body.id;
+    Comments.findById(id, (err, comment)=> {
+        if (comment.user_id == req.body.userId) {
+            const newComment = {
+                text: req.body.text,
+            };
+            Comments.updateOne({ _id : id }, newComment).then(result => {
+                res.send(result);
+            }).catch(err => res.send(err));
+        } else {
+            res.send(`401`);
+        }
+    }).catch(err => res.send(`cannot find comment with that id`));
+
 });
 
 app.listen(port, ()=> {
