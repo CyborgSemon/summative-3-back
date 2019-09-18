@@ -132,6 +132,46 @@ app.post(`/product`, (req, res)=> {
     });
 });
 
+// READ get all comments based of the listing id
+app.post(`/comments`, (req, res)=> {
+    Comments.find().then((rawResult)=> {
+        let finalResult = [];
+        rawResult.map((comment)=> {
+            if (comment.listingId == req.body.listingId) {
+                finalResult.push(comment);
+            }
+        });
+        if (finalResult.length > 0) {
+            res.send(finalResult);
+        } else {
+            res.send(`No comments found`);
+        }
+    });
+});
+
+// DELETE delete comment based off owner id
+app.delete(`/deleteComment`, (req, res)=> {
+     Comments.findById(req.body.commentId, (err, comment)=> {
+         if (comment) {
+             if (comment.listingId == req.body.listingId && comment.commentUserId == req.body.userId) {
+                  Comments.deleteOne({
+                      id: req.body.commentId
+                  }, (err)=> {
+                      if (err) {
+                          res.send(`Failed to delete comment`);
+                      } else {
+                          res.send(`Comment deleted`);
+                      }
+                  });
+             } else {
+                 res.send(`You dont have permission to delete this comment`);
+             }
+         } else {
+             res.send(`No comment found`);
+         }
+     });
+});
+
 app.listen(port, ()=> {
     console.log(`application is running on port ${port}`);
 });
