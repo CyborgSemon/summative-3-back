@@ -12,6 +12,7 @@ const config = require(`./config.json`);
 
 const Users = require('./models/users');
 const Listings = require('./models/listings');
+const Comments = require('./models/comments');
 
 mongoose.connect(`mongodb+srv://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.CLUSTER_NAME}.mongodb.net/${config.TABLE_NAME}?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
