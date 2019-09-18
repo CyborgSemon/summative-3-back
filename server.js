@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require(`express`);
 const app = express();
 const port = 3000;
 const bodyParser = require(`body-parser`);
@@ -8,8 +8,8 @@ const bcrypt = require(`bcryptjs`);
 
 const config = require(`./config.json`);
 
-const Users = require('./models/users');
-const Listings = require('./models/listings');
+const Users = require(`./models/users`);
+const Listings = require(`./models/listings`);
 
 mongoose.connect(`mongodb+srv://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.CLUSTER_NAME}.mongodb.net/${config.TABLE_NAME}?retryWrites=true&w=majority`, {
     useNewUrlParser: true
@@ -36,10 +36,21 @@ app.get(`/`, (req, res)=> {
     res.send(`Welcome to our Pop Culture Merchandise Niche Market App`);
 });
 
-app.patch('/listing/:id', function(req, res){
+app.post(`/listing/:id`, function(req, res){
     const id = req.params.id;
-    Listing.findById(id, function(err, product){
-        if (product.user_id == req.body.userId) {
+    Listing.findById(id, function (err, listing) {
+        if (listing.user_id == req.body.userId) {
+            res.send(listing);
+        } else {
+            res.send(`401`);
+        }
+    });
+});
+
+app.patch(`/updateListing`, function(req, res){
+    const id = req.body.id;
+    Listing.findById(id, function(err, listing){
+        if (listing.user_id == req.body.userId) {
             const newListing = {
                 title: req.body.name,
                 description: req.body.price,
@@ -49,16 +60,16 @@ app.patch('/listing/:id', function(req, res){
                 res.send(result);
             }).catch(err => res.send(err));
         } else {
-            res.send('401');
+            res.send(`401`);
         }
-    }).catch(err => res.send('cannot find product with that id'));
+    }).catch(err => res.send(`cannot find listing with that id`));
 
 });
 
-app.delete('/listing/:id', function(req, res){
+app.delete(`/listing/:id`, function(req, res){
     const id = req.params.id;
     Listing.deleteOne({ _id: id }, function (err) {
-        res.send('deleted');
+        res.send(`deleted`);
     });
 });
 
