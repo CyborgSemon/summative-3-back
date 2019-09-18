@@ -104,7 +104,7 @@ app.post(`/addAComment`, (req, res)=> {
         _id: new mongoose.Types.ObjectId(),
         commentUsername: req.body.commentUsername,
         commentText: req.body.commentText,
-    	commentDate: req.body.commentDate,
+        commentDate: req.body.commentDate,
         commentReply: {
             reply: req.body.reply,
             replyId: req.body.replyId
@@ -168,27 +168,79 @@ app.post(`/comments`, (req, res)=> {
     });
 });
 
+// UPDATE listing based off id
+app.patch(`/updateListing`, (req, res)=> {
+    const id = req.body.id;
+    Listings.findById(id, (err, listing)=> {
+        if (listing.user_id == req.body.userId) {
+            const newListing = {
+                title: req.body.name,
+                description: req.body.price,
+                price: req.body.price
+            };
+            Listings.updateOne({ _id : id }, newListing).then(result => {
+                res.send(result);
+            }).catch(err => res.send(err));
+        } else {
+            res.send(`401`);
+        }
+    }).catch(err => res.send(`cannot find listing with that id`));
+});
+
+// DELETE delete a listing based of id
+app.delete(`/deleteListing`, (req, res)=> {
+    Listings.deleteOne({
+        _id: req.body.id
+    }, (err)=> {
+        if (err) {
+            res.send(`failed to delete`);
+        } else {
+            res.send(`deleted`);
+        }
+    });
+});
+
+// UPDATE update a comment text
+app.patch(`/updateComment`, (req, res)=> {
+    const id = req.body.commentId;
+    Comments.findById(id, (err, comment)=> {
+        if (comment.commentUserId == req.body.userId) {
+            const newComment = {
+                commentText: req.body.text,
+            };
+            Comments.updateOne({
+                _id : id
+            }, newComment).then(result => {
+                res.send(result);
+            }).catch(err => res.send(err));
+        } else {
+            res.send(`401`);
+        }
+    }).catch(err => res.send(`cannot find comment with that id`));
+});
+
 // DELETE delete comment based off owner id
 app.delete(`/deleteComment`, (req, res)=> {
-     Comments.findById(req.body.commentId, (err, comment)=> {
-         if (comment) {
-             if (comment.listingId == req.body.listingId && comment.commentUserId == req.body.userId) {
-                  Comments.deleteOne({
-                      id: req.body.commentId
-                  }, (err)=> {
-                      if (err) {
-                          res.send(`Failed to delete comment`);
-                      } else {
-                          res.send(`Comment deleted`);
-                      }
-                  });
-             } else {
-                 res.send(`You dont have permission to delete this comment`);
-             }
-         } else {
-             res.send(`No comment found`);
-         }
-     });
+    const id = req.body.commentId;
+    Comments.findById(id, (err, comment)=> {
+        if (comment) {
+            if (comment.listingId == req.body.listingId && comment.commentUserId == req.body.userId) {
+                Comments.deleteOne({
+                    id: id
+                }, (err)=> {
+                    if (err) {
+                        res.send(`Failed to delete comment`);
+                    } else {
+                        res.send(`Comment deleted`);
+                    }
+                });
+            } else {
+                res.send(`You dont have permission to delete this comment`);
+            }
+        } else {
+            res.send(`No comment found`);
+        }
+    });
 });
 
 app.listen(port, ()=> {
