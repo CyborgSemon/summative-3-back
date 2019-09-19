@@ -152,6 +152,7 @@ app.post(`/product`, (req, res)=> {
     });
 });
 
+// READ get comment by id
 app.post(`/getComment`, (req, res)=> {
     Comments.findById(req.body.id, (err, product)=> {
         res.send(product);
