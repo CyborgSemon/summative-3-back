@@ -83,27 +83,13 @@ app.post(`/registerUser`, (req, res)=> {
 });
 
 // CREATE add a new listing
-// app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
-//     const listing = new Listings({
-//         _id: new mongoose.Types.ObjectId(),
-//         title: req.body.title,
-//         description: req.body.description,
-//         price: req.body.price,
-//         filePath: req.file.path,
-//         originalName: req.body.originalname
-//     });
-//
-//     listing.save().then(result => {
-//         res.send(result);
-//     }).catch(err => res.send(err));
-// });
-app.post(`/newListing`, (req, res)=> {
+app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
     const listing = new Listings({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
         description: req.body.description,
         price: req.body.price,
-        filePath: req.file.path,
+        filePath: req.file.filePath,
         originalName: req.body.originalname,
         uploaderId: req.body.userId
     });
