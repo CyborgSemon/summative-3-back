@@ -152,6 +152,14 @@ app.post(`/product`, (req, res)=> {
     });
 });
 
+app.post(`/getComment`, (req, res)=> {
+    Comments.findById(req.body.id, (err, product)=> {
+        res.send(product);
+    }).catch((err)=> {
+        res.send(`Can not find that item`);
+    });
+});
+
 // READ get all comments based of the listing id
 app.post(`/comments`, (req, res)=> {
     Comments.find().then((rawResult)=> {
