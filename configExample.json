@@ -1,6 +1,6 @@
 {
 	"MONGO_USERNAME": "",
 	"MONGO_PASSWORD": "",
-	"CLUSER_NAME": "",
+	"CLUSTER_NAME": "",
 	"TABLE_NAME": ""
 }
