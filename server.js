@@ -90,7 +90,8 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
         description: req.body.description,
         price: req.body.price,
         filePath: req.file.path,
-        originalName: req.body.originalname
+        originalName: req.body.originalname,
+        uploaderId: req.body.userId
     });
 
     listing.save().then(result => {
