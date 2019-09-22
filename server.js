@@ -119,6 +119,25 @@ app.post(`/addAComment`, (req, res)=> {
     }).catch(err => res.send(err));
 });
 
+// READ for the home page items
+app.get(`/home`, (req, res)=> {
+    Listings.find().then((results)=> {
+        let finalArray = [];
+        finalArray.push(results[Math.floor(Math.random() * results.length)]);
+        results.map((result, i)=> {
+            if (i < 8) {
+                finalArray.push(result);
+            } else {
+                break;
+            }
+        });
+        res.send(finalArray);
+    }).catch((err)=> {
+        console.log(err);
+        res.send(err);
+    });
+});
+
 // READ users for login
 app.post(`/login`, (req, res)=> {
     Users.findOne({
