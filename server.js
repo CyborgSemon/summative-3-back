@@ -94,9 +94,14 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
         uploaderId: req.body.userId
     });
 
+    console.log(`test 1`);
     listing.save().then(result => {
+        console.log(`test 2`);
         res.send(result);
-    }).catch(err => res.send(err));
+    }).catch((err)=> {
+        console.log(`test 3`);
+        res.send(err);
+    });
 });
 
 // CREATE adding a comment
