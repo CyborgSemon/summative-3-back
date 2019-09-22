@@ -127,8 +127,6 @@ app.get(`/home`, (req, res)=> {
         results.map((result, i)=> {
             if (i < 8) {
                 finalArray.push(result);
-            } else {
-                break;
             }
         });
         res.send(finalArray);
