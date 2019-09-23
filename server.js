@@ -101,17 +101,21 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
 
 // CREATE adding a comment
 app.post(`/addAComment`, (req, res)=> {
+    let values = JSON.parse(req.body.data);
     const comment = new Comments({
         _id: new mongoose.Types.ObjectId(),
-        commentUsername: req.body.commentUsername,
-        commentText: req.body.commentText,
-        commentDate: req.body.commentDate,
+        listingId: values.listingId,
+        commentUsername: values.commentUsername,
+        commentText: values.commentText,
+        commentDate: values.commentDate,
+        commentUserId: values.commentUserId,
         commentReply: {
-            reply: req.body.reply,
-            replyId: req.body.replyId
-        },
-        commentUserId: req.body.userId,
-        listingId: req.body.listingId,
+            reply: values.reply,
+            replyUsername: values.replyUsername,
+            replyText: values.replyText,
+            replyDate: values.replyDate,
+            replyUserId: values.replyUserId
+        }
     });
 
     comment.save().then(result =>{
@@ -162,38 +166,62 @@ app.get(`/allListings`, (req, res)=> {
 
 // READ get products based off id
 app.post(`/product`, (req, res)=> {
+    let extraData = {};
     Listings.findById(req.body.id, (err, product)=> {
-        res.send(product);
-    }).catch((err)=> {
-        res.send(`Can not find that item`);
-    });
-});
-
-// READ get comment by id
-app.post(`/getComment`, (req, res)=> {
-    Comments.findById(req.body.id, (err, product)=> {
-        res.send(product);
-    }).catch((err)=> {
-        res.send(`Can not find that item`);
-    });
-});
-
-// READ get all comments based of the listing id
-app.post(`/comments`, (req, res)=> {
-    Comments.find().then((rawResult)=> {
-        let finalResult = [];
-        rawResult.map((comment)=> {
-            if (comment.listingId == req.body.listingId) {
-                finalResult.push(comment);
-            }
+        Users.findById(product.uploaderId, (err2, user)=> {
+            extraData.uploaderName = user.username;
+            Comments.find().then((rawResult)=> {
+                if (rawResult.length > 0) {
+                    let finalResult = [];
+                    rawResult.map((comment)=> {
+                        if (comment.listingId == req.body.id) {
+                            finalResult.push(comment);
+                        }
+                    });
+                    if (finalResult.length > 0) {
+                        extraData.comments = finalResult;
+                    } else {
+                        extraData.comments = `No comments found`;
+                    }
+                } else {
+                    extraData.comments = `No comments found`;
+                }
+                extraData.info = product;
+                res.send(extraData);
+            });
+        }).catch((err2)=> {
+            res.send(`Can not find the user who uploaded this listing`);
         });
-        if (finalResult.length > 0) {
-            res.send(finalResult);
-        } else {
-            res.send(`No comments found`);
-        }
+    }).catch((err)=> {
+        res.send(`Can not find that item`);
     });
 });
+
+// // READ get comment by id
+// app.post(`/getComment`, (req, res)=> {
+//     Comments.findById(req.body.id, (err, comment)=> {
+//         res.send(comment);
+//     }).catch((err)=> {
+//         res.send(`Can not find that item`);
+//     });
+// });
+
+// // READ get all comments based of the listing id
+// app.post(`/comments`, (req, res)=> {
+//     Comments.find().then((rawResult)=> {
+//         let finalResult = [];
+//         rawResult.map((comment)=> {
+//             if (comment.listingId == req.body.listingId) {
+//                 finalResult.push(comment);
+//             }
+//         });
+//         if (finalResult.length > 0) {
+//             res.send(finalResult);
+//         } else {
+//             res.send(`No comments found`);
+//         }
+//     });
+// });
 
 // UPDATE listing based off id
 app.patch(`/updateListing`, (req, res)=> {
@@ -214,6 +242,29 @@ app.patch(`/updateListing`, (req, res)=> {
     }).catch(err => res.send(`cannot find listing with that id`));
 });
 
+// UPDATE update a comment text
+app.patch(`/addReply`, (req, res)=> {
+    let values = JSON.parse(req.body.data);
+    const id = values.commentId;
+    Comments.findById(id, (err, reply)=> {
+        const addedReply = {
+            commentReply: {
+                reply: true,
+                replyUsername: values.replyUsername,
+                replyText: values.replyText,
+                replyDate: values.replyDate,
+                replyUserId: values.replyUserId,
+            }
+        };
+        Comments.updateOne({
+            _id : id
+        }, addedReply).then(result => {
+            res.send(result);
+        }).catch(err => res.send(err));
+
+    }).catch(err => res.send(`cannot find comment with that id`));
+});
+
 // DELETE delete a listing based of id
 app.delete(`/deleteListing`, (req, res)=> {
     Listings.deleteOne({
@@ -225,25 +276,6 @@ app.delete(`/deleteListing`, (req, res)=> {
             res.send(`deleted`);
         }
     });
-});
-
-// UPDATE update a comment text
-app.patch(`/updateComment`, (req, res)=> {
-    const id = req.body.commentId;
-    Comments.findById(id, (err, comment)=> {
-        if (comment.commentUserId == req.body.userId) {
-            const newComment = {
-                commentText: req.body.text,
-            };
-            Comments.updateOne({
-                _id : id
-            }, newComment).then(result => {
-                res.send(result);
-            }).catch(err => res.send(err));
-        } else {
-            res.send(`401`);
-        }
-    }).catch(err => res.send(`cannot find comment with that id`));
 });
 
 // DELETE delete comment based off owner id

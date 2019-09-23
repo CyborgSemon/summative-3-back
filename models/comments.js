@@ -7,7 +7,10 @@ const commentsSchema = new mongoose.Schema({
 	commentDate: Date,
     commentReply: {
         reply: Boolean,
-        replyId: mongoose.Schema.Types.ObjectId
+        replyUsername: String,
+        replyText: String,
+        replyDate: Date,
+        replyUserId: mongoose.Schema.Types.ObjectId
     },
 	commentUserId: {
 		type: mongoose.Schema.Types.ObjectId,
