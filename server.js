@@ -86,8 +86,6 @@ app.post(`/registerUser`, (req, res)=> {
 
 // CREATE add a new listing
 app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
-    console.log(req.body);
-    console.log(req.file);
     const listing = new Listings({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
@@ -98,14 +96,9 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
         uploaderId: req.body.userId
     });
 
-    console.log(`test 1`);
     listing.save().then(result => {
-        console.log(`test 2`);
         res.send(result);
-    }).catch((err)=> {
-        console.log(`test 3`);
-        res.send(err);
-    });
+    }).catch(err => res.send(err));
 });
 
 // CREATE adding a comment
