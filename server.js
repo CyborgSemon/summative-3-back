@@ -54,6 +54,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cors());
 
+app.use(`/uploads`, express.static(`uploads`));
+
 app.use((req, res, next)=> {
     console.log(`${req.method} request for ${req.url}`);
     next();
@@ -84,19 +86,26 @@ app.post(`/registerUser`, (req, res)=> {
 
 // CREATE add a new listing
 app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
+    console.log(req.body);
+    console.log(req.file);
     const listing = new Listings({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
         description: req.body.description,
         price: req.body.price,
-        filePath: req.file.filePath,
-        originalName: req.body.originalname,
+        filePath: req.file.path,
+        originalName: req.body.originalName,
         uploaderId: req.body.userId
     });
 
+    console.log(`test 1`);
     listing.save().then(result => {
+        console.log(`test 2`);
         res.send(result);
-    }).catch(err => res.send(err));
+    }).catch((err)=> {
+        console.log(`test 3`);
+        res.send(err);
+    });
 });
 
 // CREATE adding a comment
