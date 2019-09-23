@@ -269,13 +269,33 @@ app.patch(`/addReply`, (req, res)=> {
 
 // DELETE delete a listing based of id
 app.delete(`/deleteListing`, (req, res)=> {
-    Listings.deleteOne({
-        _id: req.body.id
-    }, (err)=> {
-        if (err) {
-            res.send(`failed to delete`);
+    const id = req.body.id;
+    Listings.findById(id, (err, listing)=> {
+        if (listing) {
+            if (req.body.userId == listing.uploaderId) {
+                Listings.deleteOne({
+                    _id: req.body.id
+                }, (err)=> {
+                    if (err) {
+                        res.send(`failed to delete`);
+                    } else {
+                        res.send(`deleted`);
+                    }
+                });
+                Comments.deleteMany({
+                    listingId: id
+                }, (err)=> {
+                    if (err) {
+                        console.log(`Comments failed to delete`);
+                    } else {
+                        console.log(`All comments were deleted`);
+                    }
+                });
+            } else {
+                res.send(`Permission denied`);
+            }
         } else {
-            res.send(`deleted`);
+            res.send(`No listing found`);
         }
     });
 });
