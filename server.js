@@ -231,7 +231,7 @@ app.patch(`/updateListing`, (req, res)=> {
     Listings.findById(id, (err, listing)=> {
         if (listing.uploaderId == req.body.userId) {
             const newListing = {
-                title: req.body.name,
+                title: req.body.title,
                 description: req.body.description,
                 price: req.body.price
             };
