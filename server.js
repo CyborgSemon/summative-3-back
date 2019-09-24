@@ -229,7 +229,7 @@ app.post(`/product`, (req, res)=> {
 app.patch(`/updateListing`, (req, res)=> {
     const id = req.body.id;
     Listings.findById(id, (err, listing)=> {
-        if (listing.user_id == req.body.userId) {
+        if (listing.uploaderId == req.body.userId) {
             const newListing = {
                 title: req.body.name,
                 description: req.body.description,
