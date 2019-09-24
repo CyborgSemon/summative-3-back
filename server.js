@@ -232,7 +232,7 @@ app.patch(`/updateListing`, (req, res)=> {
         if (listing.user_id == req.body.userId) {
             const newListing = {
                 title: req.body.name,
-                description: req.body.price,
+                description: req.body.description,
                 price: req.body.price
             };
             Listings.updateOne({ _id : id }, newListing).then(result => {
