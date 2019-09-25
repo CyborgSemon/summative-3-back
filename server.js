@@ -247,23 +247,29 @@ app.delete(`/deleteListing`, (req, res)=> {
     Listings.findById(id, (err, listing)=> {
         if (listing) {
             if (req.body.userId == listing.uploaderId) {
-                Listings.deleteOne({
-                    _id: req.body.id
-                }, (err)=> {
+                fs.unlink(`./${listing.filePath.replace(/\\/g, "/")}`, (err)=> {
                     if (err) {
-                        res.send(`failed to delete`);
-                    } else {
-                        res.send(`deleted`);
+                        res.send(err);
+                        return;
                     }
-                });
-                Comments.deleteMany({
-                    listingId: id
-                }, (err)=> {
-                    if (err) {
-                        console.log(`Comments failed to delete`);
-                    } else {
-                        console.log(`All comments were deleted`);
-                    }
+                    Listings.deleteOne({
+                        _id: req.body.id
+                    }, (err)=> {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.send(`deleted`);
+                        }
+                    });
+                    Comments.deleteMany({
+                        listingId: id
+                    }, (err)=> {
+                        if (err) {
+                            console.log(`Comments failed to delete`);
+                        } else {
+                            console.log(`All comments were deleted`);
+                        }
+                    });
                 });
             } else {
                 res.send(`Permission denied`);
