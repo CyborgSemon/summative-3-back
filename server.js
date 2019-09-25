@@ -199,32 +199,6 @@ app.post(`/product`, (req, res)=> {
     });
 });
 
-// // READ get comment by id
-// app.post(`/getComment`, (req, res)=> {
-//     Comments.findById(req.body.id, (err, comment)=> {
-//         res.send(comment);
-//     }).catch((err)=> {
-//         res.send(`Can not find that item`);
-//     });
-// });
-
-// // READ get all comments based of the listing id
-// app.post(`/comments`, (req, res)=> {
-//     Comments.find().then((rawResult)=> {
-//         let finalResult = [];
-//         rawResult.map((comment)=> {
-//             if (comment.listingId == req.body.listingId) {
-//                 finalResult.push(comment);
-//             }
-//         });
-//         if (finalResult.length > 0) {
-//             res.send(finalResult);
-//         } else {
-//             res.send(`No comments found`);
-//         }
-//     });
-// });
-
 // UPDATE listing based off id
 app.patch(`/updateListing`, (req, res)=> {
     const id = req.body.id;
