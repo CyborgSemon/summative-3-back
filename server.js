@@ -81,7 +81,9 @@ app.post(`/registerUser`, (req, res)=> {
 
     user.save().then(result => {
         res.send(result);
-    }).catch(err => res.send(err));
+    }).catch((err)=> {
+        res.send(err);
+    });
 });
 
 // CREATE add a new listing
@@ -98,7 +100,9 @@ app.post(`/newListing`, upload.single(`filePath`), (req, res)=> {
 
     listing.save().then(result => {
         res.send(result);
-    }).catch(err => res.send(err));
+    }).catch((err)=> {
+        res.send(err);
+    });
 });
 
 // CREATE adding a comment
@@ -122,7 +126,9 @@ app.post(`/addAComment`, (req, res)=> {
 
     comment.save().then(result =>{
         res.send(result);
-    }).catch(err => res.send(err));
+    }).catch((err)=> {
+        res.send(err);
+    });
 });
 
 // READ for the home page items
@@ -130,9 +136,14 @@ app.get(`/home`, (req, res)=> {
     Listings.find().then((results)=> {
         let finalArray = [];
         finalArray.push(results[Math.floor(Math.random() * results.length)]);
+        let amountCheck = 8;
         results.map((result, i)=> {
-            if (i < 8) {
-                finalArray.push(result);
+            if (i < amountCheck) {
+                if (!result.bought) {
+                    finalArray.push(result);
+                } else {
+                    amountCheck++;
+                }
             }
         });
         res.send(finalArray);
@@ -209,13 +220,42 @@ app.patch(`/updateListing`, (req, res)=> {
                 description: req.body.description,
                 price: req.body.price
             };
-            Listings.updateOne({ _id : id }, newListing).then(result => {
+            Listings.updateOne({
+                _id: id
+            }, newListing).then((result)=> {
                 res.send(result);
-            }).catch(err => res.send(err));
+            }).catch((err)=> {
+                res.send(err);
+            });
         } else {
             res.send(`401`);
         }
-    }).catch(err => res.send(`cannot find listing with that id`));
+    }).catch((err)=> {
+        res.send(`cannot find listing with that id`);
+    });
+});
+
+// UPDATE lsiting gets bought
+app.patch(`/buyListing`, (req, res)=> {
+    const id = req.body.id;
+    Listings.findById(id, (err, listing)=> {
+        if (listing.uplaoderId != req.body.userId) {
+            const newUpdate = {
+                bought: true
+            };
+            Listings.updateOne({
+                _id: id
+            }, newUpdate).then((result)=> {
+                res.send(result);
+            }).catch((err)=> {
+                res.send(err);
+            });
+        } else {
+            res.send(`invalid`);
+        }
+    }).catch((err)=> {
+        res.send(err);
+    });
 });
 
 // UPDATE update a comment text
@@ -238,7 +278,9 @@ app.patch(`/addReply`, (req, res)=> {
             res.send(result);
         }).catch(err => res.send(err));
 
-    }).catch(err => res.send(`cannot find comment with that id`));
+    }).catch((err)=> {
+        res.send(`cannot find comment with that id`);
+    });
 });
 
 // DELETE delete a listing based of id

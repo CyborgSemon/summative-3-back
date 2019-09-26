@@ -7,6 +7,7 @@ const listingSchema = new mongoose.Schema({
 	price: String,
 	filePath: String,
 	originalName: String,
+	bought: Boolean,
 	uploaderId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: `users`
