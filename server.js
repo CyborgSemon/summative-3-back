@@ -172,8 +172,14 @@ app.post(`/login`, (req, res)=> {
 
 // READ get all listings
 app.get(`/allListings`, (req, res)=> {
+    let finalArray = [];
     Listings.find().then((result)=> {
-        res.send(result);
+        result.map((item)=> {
+            if (!item.bought) {
+                finalArray.push(item);
+            }
+        });
+        res.send(finalArray);
     });
 });
 
