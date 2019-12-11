@@ -8,13 +8,23 @@ const bcrypt = require(`bcryptjs`);
 const fs = require(`fs`);
 const multer = require(`multer`);
 
-const config = require(`./config.json`);
+// const config = require(`./config.json`);
 
 const Users = require(`./models/users`);
 const Listings = require(`./models/listings`);
 const Comments = require(`./models/comments`);
 
-mongoose.connect(`mongodb+srv://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.CLUSTER_NAME}.mongodb.net/${config.TABLE_NAME}?retryWrites=true&w=majority`, {
+// Include this line rather than the one bellow
+app.set('port', (process.env.PORT || port));
+app.listen(app.get('port'), ()=> {
+    console.log('Server is running on port '+ app.get('port'));
+});
+
+// mongoose.connect(`mongodb+srv://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.CLUSTER_NAME}.mongodb.net/${config.TABLE_NAME}?retryWrites=true&w=majority`, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// });
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.CLUSTER_NAME}.mongodb.net/${process.env.TABLE_NAME}?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -352,6 +362,6 @@ app.delete(`/deleteComment`, (req, res)=> {
     });
 });
 
-app.listen(port, ()=> {
-    console.log(`application is running on port ${port}`);
-});
+// app.listen(port, ()=> {
+//     console.log(`application is running on port ${port}`);
+// });
